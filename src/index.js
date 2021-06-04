@@ -1,6 +1,6 @@
 import Phaser from 'phaser'
 
-import StartingScene from '../scenes/starting-scene';
+import ScenesMenu from '../scenes/scenes-menu';
 
 const config = {
   type: Phaser.AUTO,
@@ -8,7 +8,7 @@ const config = {
   height: 600,
   pixelArt: true,
   zoom: 1.2,
-  scene: StartingScene,
+  scene: ScenesMenu,
   physics: {
     default: "arcade",
     arcade: {

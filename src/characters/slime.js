@@ -1,5 +1,10 @@
 import Vector2 from 'phaser/src/math/Vector2'
+
 const eps = 20;
+
+const delay = 500;
+
+
 export default class Slime extends Phaser.Physics.Arcade.Sprite {
     constructor(scene, x, y, name, frame) {
         super(scene, x, y, name, frame);
@@ -7,8 +12,21 @@ export default class Slime extends Phaser.Physics.Arcade.Sprite {
         scene.add.existing(this);
         this.state = "";
         this.hp = 100;
+        this.steerings = [];
     }
+
     update() {
+        let velocity = new Vector2(0, 0);
+
+        this.steerings.forEach(steering => {
+            velocity = velocity.add(steering.calculateImpulse())
+        });
+        let newVelocity = velocity
+            .normalize()
+            .multiply(new Vector2(this.speed, this.speed));
+        this.body.setVelocity(newVelocity.x, newVelocity.y);
+
+
         switch (this.state) {
             case 'rotate':
                 break
@@ -34,16 +52,21 @@ export default class Slime extends Phaser.Physics.Arcade.Sprite {
 
     updateAnimation() {
         const animsController = this.anims;
-        if (this.wantToJump) {
-            animsController.play(this.animations[1], true);
-        } else {
-            animsController.play(this.animations[0], true);
-        }
+        try {
+            if (this.hp >= 0) {
+                animsController.play(this.animations[0], true);
+            } else {
+                animsController.play(this.animations[2], true);
+            }
+        } catch (e) {
 
+        }
     }
+
     hasArrived() {
         return this.pointOfInterest === undefined || this.pointOfInterest.distance(this.body.position) < eps;
     }
+
     selectNextLocation() {
         const nextTile = this.path.shift();
         if (nextTile) {
@@ -51,5 +74,34 @@ export default class Slime extends Phaser.Physics.Arcade.Sprite {
         } else {
             this.nextLocation = this.body.position;
         }
+    }
+
+    damage() {
+        if (this.hp > 0) {
+            this.hp = this.hp - 41
+        } else {
+            this.nextLocation = null
+            this.body.destroy()
+        }
+    }
+
+    selectTarget(target) {
+        this.target = target;
+        this.steerings.forEach(steering => steering.setTarget(target));
+    }
+
+    setObstacles(obstacles) {
+        this.steerings.forEach(steering => {
+
+            steering.setObstacles(obstacles);
+        });
+    }
+
+    setSteering(steering) {
+        this.steerings = [steering];
+    }
+
+    setSteerings(steerings) {
+        this.steerings = steerings;
     }
 }

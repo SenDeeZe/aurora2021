@@ -25,3 +25,17 @@ Due to problems with bundling shaders and requirement of the Phaser3 to get URL 
    
 What we need: shader-based effects: explosions, spells, fire,
 lightnings, portals, acid puddles and more. 
+
+# Network Lab
+Networking demo: https://github.com/ujenjt/aurora-multiplayer
+Requirements:
+1. Handle disconnects
+2. Basic multiplayer mechanics
+
+Extra
+1. Add snapshot-interpolation (hint: https://github.com/geckosio/snapshot-interpolation)  
+2. PvP Shooter (Slime Rush Scene)
+
+# Proc Gen Lab
+
+1. Generate Map with Proc Gen (Proc Gen Scene)

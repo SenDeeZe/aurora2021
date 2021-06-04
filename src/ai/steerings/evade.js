@@ -1,12 +1,12 @@
-import Steering from "./steering.js";
-import Vector2 from 'phaser/src/math/Vector2'
+import Steering from "./steering";
+import Vector2 from "phaser/src/math/Vector2";
 
-class Pursuit extends Steering {
-
+class Evade extends Steering {
     constructor (owner, objects, force = 1, ownerSpeed, targetSpeed) {
         super(owner, objects, force);
         this.ownerSpeed = ownerSpeed;
-        this.targetSpeed = targetSpeed
+        this.targetSpeed = targetSpeed;
+        this.radius = 65;
     }
 
     calculateImpulse () {
@@ -21,16 +21,18 @@ class Pursuit extends Steering {
             const predictTime = toTarget.length() / this.targetSpeed.add(this.ownerSpeed).length();
             toTarget.x += predictTime*targetDirection.x;
             toTarget.y += predictTime*targetDirection.y;
+            if (toTarget.length() < this.radius)
+                toTarget.multiply(new Vector2(-1));
         }
 
         if (isNaN(toTarget.x))
             return new Vector2();
+
         const x = (Math.abs(toTarget.x) < 1) ? 0 : -Math.sign(toTarget.x)*this.ownerSpeed.x;
         const y = (Math.abs(toTarget.y) < 1) ? 0 : -Math.sign(toTarget.y)*this.ownerSpeed.y;
 
         return new Vector2(x, y);
-       // return toTarget;
     }
 }
 
-export {Pursuit};
+export {Evade};
